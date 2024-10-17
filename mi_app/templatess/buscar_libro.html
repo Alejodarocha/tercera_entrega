@@ -1,0 +1,17 @@
+{% extends 'mi_app/base.html' %}
+
+{% block content %}
+<h2>Buscar Libro</h2>
+<form method="GET">
+    <input type="text" name="q" placeholder="Título o Autor">
+    <button type="submit">Buscar</button>
+</form>
+
+{% if resultados %}
+    <ul>
+        {% for libro in resultados %}
+            <li>{{ libro.titulo }} - {{ libro.autor }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}
