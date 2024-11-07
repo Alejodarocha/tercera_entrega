@@ -17,17 +17,33 @@ def signup(request):
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .forms import ProfileForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from .forms import ProfileForm
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
+from .models import Profile
+
+
+
+
 
 @login_required
 def profile(request):
+    profile = request.user.profile  
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
+            messages.success(request, "Perfil actualizado exitosamente.")
+            return redirect('profile')  
     else:
-        form = ProfileForm(instance=request.user)
-    return render(request, 'accounts/profile.html', {'form': form})
+        form = ProfileForm(instance=profile)  
 
+    return render(request, 'profile.html', {'form': form, 'profile': profile})
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Libro
@@ -35,9 +51,9 @@ from .forms import LibroForm
 from django.contrib import messages
 
 
-def lista_libros(request):
+def lista_libro(request):
     libros = Libro.objects.all()
-    return render(request, 'libros/lista_libros.html', {'libros': libros})
+    return render(request, 'lista_libro.html', {'libros': libros})
 
 
 def crear_libro(request):
@@ -45,11 +61,11 @@ def crear_libro(request):
         form = LibroForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, "Libro creado exitosamente.")
-            return redirect('lista_libros')
+            messages.success(request, "Libro agregado de manera exitosa.") 
+            return redirect('lista_libro')  
     else:
         form = LibroForm()
-    return render(request, 'libros/libro_form.html', {'form': form})
+    return render(request, 'libro_form.html', {'form': form})
 
 
 def libro_update(request, pk):
@@ -62,20 +78,23 @@ def libro_update(request, pk):
             return redirect('lista_libros')
     else:
         form = LibroForm(instance=libro)
-    return render(request, 'libros/libro_form.html', {'form': form})
+    return render(request, 'libro_form.html', {'form': form})
 
+
+from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponseForbidden
 
 def libro_delete(request, pk):
-    libro = get_object_or_404(Libro, pk=pk)
-    if request.method == 'POST':
-        libro.delete()
-        messages.success(request, "Libro eliminado exitosamente.")
-        return redirect('lista_libros')
-    return render(request, 'libros/eliminar_libro.html', {'libro': libro})
+    libro = get_object_or_404(Libro, pk=pk)  
+
+    if request.method == "POST":
+        libro.delete()  
+        return redirect('lista_libro')  
+    else:
+        return HttpResponseForbidden()
 
 
-
-from .models import Pagina
+from .models import Page
 from .forms import PageForm
 
 def update_page(request, pk):
@@ -85,7 +104,7 @@ def update_page(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Página actualizada exitosamente.")
-            return redirect('page_list')  # Asume que tienes una vista para listar páginas
+            return redirect('page_list')  
     else:
         form = PageForm(instance=page)
     return render(request, 'pages/page_form.html', {'form': form})
@@ -102,16 +121,16 @@ from django.db.models import Q
 from .models import Libro
 
 def buscar_libro(request):
-    query = request.GET.get('q')
-    resultados = None
-    if query:
-        resultados = Libro.objects.filter(
-            Q(titulo__icontains=query) | Q(autor__icontains=query)
-        )
-    if not resultados:
-        mensaje = "No está ese libro aún"
-    return render(request, 'buscar_libro.html', {'resultados': resultados, 'query': query, 'mensaje': mensaje})
+    query = request.GET.get('q', '')
+    resultados = []
+    mensaje = ""  
 
+    if query:
+        resultados = Libro.objects.filter(titulo__icontains=query) | Libro.objects.filter(autor__icontains=query)
+        if not resultados:  
+            mensaje = "No se encontraron libros."
+
+    return render(request, 'buscar_libro.html', {'resultados': resultados, 'query': query, 'mensaje': mensaje})
 
 
 from django.contrib.auth import authenticate, login, logout
@@ -128,10 +147,6 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
-@login_required
-def profile(request):
-    return render(request, 'profile.html', {'user': request.user})
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -142,6 +157,9 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+               
+                if not hasattr(user, 'profile'):
+                    Profile.objects.create(user=user)  
                 messages.success(request, f"Bienvenido, {user.username}!")
                 return redirect('home')
             else:
@@ -150,9 +168,8 @@ def login_view(request):
             messages.error(request, "Nombre de usuario o contraseña incorrectos.")
     else:
         form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'accounts/login.html', {'form': form})
 
-# Vista para cerrar sesión (logout_view)
 def logout_view(request):
     logout(request)
     messages.success(request, "Has cerrado sesión exitosamente.")
@@ -167,7 +184,8 @@ def crear_pagina(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Página creada exitosamente.")
-            return redirect('libro_list')  # Cambia esto según la URL a la que quieras redirigir
+            return redirect('lista_libro') 
     else:
         form = PageForm()
     return render(request, 'crear_pagina.html', {'form': form})
+

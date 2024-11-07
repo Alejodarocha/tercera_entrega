@@ -1,27 +1,19 @@
 from django.urls import path
 from . import views
+from django.contrib import admin
+from .views import lista_libro
 
 urlpatterns = [
-    path('libros/', views.lista_libros, name='libro_list'),
-    path('libros/create/', views.crear_libro, name='libro_create'),
-    path('libros/update/<int:pk>/', views.libro_update, name='libro_update'),
-    path('libros/delete/<int:pk>/', views.libro_delete, name='libro_delete'),
-]
-
-
-from django.urls import path
-from . import views
-
-urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
+    path('', views.home, name='index'),
     path('accounts/signup/', views.signup, name='signup'),
     path('accounts/profile/', views.profile, name='profile'),
-    path('login/', views.login_view, name='login'),
+    path('accounts/login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('pages/', views.lista_libros, name='lista_libros'),
-    path('pages/create/', views.crear_pagina, name='crear_pagina'),
-    path('pages/<int:pk>/edit/', views.update_page, name='update_page'),
-    path('pages/<int:pk>/delete/', views.delete_page, name='delete_page'),
+    path('pages/', lista_libro, name='lista_libro'),
     path('buscar/', views.buscar_libro, name='buscar_libro'),
-]
+    path('libro_delete/<int:pk>/', views.libro_delete, name='libro_delete'),
+    path('crear-libro/', views.crear_libro, name='crear_libro'),
+    ]

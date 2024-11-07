@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif; text-align: center;">Iniciar Sesión</h1>
+    <p style="color: #555; font-size: 16px; text-align: center; max-width: 400px;">
+        Bienvenido de nuevo. Por favor, introduce tu nombre de usuario y contraseña para continuar.
+    </p>
+</div>
+
+<div style="display: flex; justify-content: center; margin: 20px;">
+    <form method="post" action="{% url 'login' %}" style="background-color: #98DED9; padding: 20px; border-radius: 8px; max-width: 400px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        
+        <div style="margin-bottom: 15px;">
+            <label for="username" style="font-weight: bold; color: #0B2F9F;">Nombre de usuario</label>
+            {{ form.username }}
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="password" style="font-weight: bold; color: #0B2F9F;">Contraseña</label>
+            {{ form.password }}
+        </div>
+        
+        <button type="submit" style="width: 100%; background-color: #0B2F9F; color: white; padding: 10px; font-size: 1em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+            Iniciar Sesión
+        </button>
+        
+        <div style="text-align: center; margin-top: 10px;">
+            <p style="font-size: 14px; color: #555;">¿No tienes una cuenta? <a href="{% url 'signup' %}" style="color: #0B2F9F; text-decoration: none;">Regístrate aquí</a>.</p>
+        </div>
+    </form>
+</div>
+
+
+</div>
+{% endblock %}

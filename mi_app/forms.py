@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class LibroForm(forms.ModelForm):
     class Meta:
         model = Libro
-        fields = ['titulo', 'autor', 'publicado']
+        fields = ['titulo', 'autor', 'descripcion', 'imagen', 'fecha_publicacion']
 
 
 
@@ -30,9 +30,9 @@ class ProfileForm(forms.ModelForm):
 
 
 
-from .models import Pagina
+from .models import Page
 
 class PageForm(forms.ModelForm):
     class Meta:
-        model = Pagina
+        model = Page
         fields = ['titulo', 'autor', 'descripcion', 'fecha', 'imagen']

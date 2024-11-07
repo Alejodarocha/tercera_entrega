@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="text-align: center; margin: 50px;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif;">Buscar Libros</h1>
+    <form method="get" action="{% url 'buscar_libro' %}" style="margin: 20px 0;">
+        <input 
+            type="text" 
+            name="q" 
+            placeholder="Buscar por título o autor" 
+            value="{{ query }}" 
+            style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+        <button 
+            type="submit" 
+            style="padding: 10px 15px; margin-left: 5px; border-radius: 5px; border: none; background-color: #0B2F9F; color: white; font-size: 16px; cursor: pointer;">
+            Buscar
+        </button>
+    </form>
+
+    {% if resultados %}
+        <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+            {% for libro in resultados %}
+                <div style="border: 1px solid #ccc; border-radius: 8px; padding: 20px; margin: 10px; width: 300px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                    <h3 style="color: #0B2F9F;">{{ libro.titulo }}</h3>
+                    <p style="font-weight: bold;">Autor: {{ libro.autor }}</p>
+                    <p style="margin: 10px 0; color: #555;">{{ libro.descripcion }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #999;">{{ mensaje }}</p>
+    {% endif %}
+</div>
+{% endblock %}

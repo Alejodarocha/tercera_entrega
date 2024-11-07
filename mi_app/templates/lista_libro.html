@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="text-align: center; margin: 50px;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif;">Lista de Libros</h1>
+
+    {% if libros %}
+        <table style="width: 80%; margin: auto; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #0B2F9F; color: white;">
+                    <th style="padding: 10px; text-align: left;">Título</th>
+                    <th style="padding: 10px; text-align: left;">Autor</th>
+                    <th style="padding: 10px; text-align: left;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for libro in libros %}
+                    <tr style="border-bottom: 1px solid #ccc;">
+                        <td style="padding: 10px;">{{ libro.titulo }}</td>
+                        <td style="padding: 10px;">{{ libro.autor }}</td>
+                        <td style="padding: 10px;">
+                            <form method="POST" action="{% url 'libro_delete' libro.id %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="color: #999;">No hay libros en la lista.</p>
+    {% endif %}
+</div>
+{% endblock %}

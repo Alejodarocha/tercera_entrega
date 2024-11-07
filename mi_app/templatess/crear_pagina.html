@@ -1,8 +1,0 @@
-
-<h1>Crear Nueva Página</h1>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Crear</button>
-</form>
-<a href="{% url 'libro_list' %}">Volver a la lista de libros</a>

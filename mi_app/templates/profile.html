@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif; text-align: center;">Perfil de Usuario</h1>
+    <p style="color: #555; font-size: 16px; text-align: center; max-width: 400px;">
+        Edita la información de tu perfil y guarda los cambios.
+    </p>
+</div>
+
+<div style="display: flex; justify-content: center; margin: 20px;">
+    <div style="background-color: #98DED9; padding: 20px; border-radius: 8px; max-width: 500px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #0B2F9F;">Datos de Perfil</h2>
+        <p><strong>Nombre de usuario:</strong> {{ profile.user.username }}</p>
+        <p><strong>Correo electrónico:</strong> {{ profile.user.email }}</p>
+        <p><strong>Descripción:</strong> {{ profile.descripcion }}</p>
+        {% if profile.imagen %}
+            <p><strong>Imagen de perfil:</strong></p>
+            <img src="{{ profile.imagen.url }}"  style="max-width: 100%; height: auto;">
+        {% endif %}
+    </div>
+</div>
+
+<div style="display: flex; justify-content: center; margin: 20px;">
+    <form method="post" enctype="multipart/form-data" style="background-color: #98DED9; padding: 20px; border-radius: 8px; max-width: 500px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        
+      
+        <div style="margin-bottom: 15px;">
+            <label for="id_username" style="font-weight: bold; color: #0B2F9F;">Nombre de usuario</label>
+            {{ form.username }}
+        </div>
+        
+       
+        <div style="margin-bottom: 15px;">
+            <label for="id_email" style="font-weight: bold; color: #0B2F9F;">Correo electrónico</label>
+            {{ form.email }}
+        </div>
+        
+       
+        <div style="margin-bottom: 15px;">
+            <label for="id_descripcion" style="font-weight: bold; color: #0B2F9F;">Descripción</label>
+            {{ form.descripcion }}
+        </div>
+        
+        
+        <div style="margin-bottom: 15px;">
+            <label for="id_imagen" style="font-weight: bold; color: #0B2F9F;">Imagen de perfil</label>
+            {{ form.imagen }}
+        </div>
+
+       
+        <button type="submit" style="width: 100%; background-color: #0B2F9F; color: white; padding: 10px; font-size: 1em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+            Guardar Cambios
+        </button>
+    </form>
+</div>
+
+<div style="text-align: center; margin: 20px;">
+    <p style="color: #999; font-size: 14px;">© 2024 Biblioteca en Línea. Todos los derechos reservados.</p>
+</div>
+{% endblock %}

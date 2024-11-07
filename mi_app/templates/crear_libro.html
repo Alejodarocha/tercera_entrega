@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 50px auto; text-align: center;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif;">Agregar Nuevo Libro</h1>
+    <p style="color: #555; font-size: 16px; margin-bottom: 30px;">
+        Llena el siguiente formulario para agregar un nuevo libro a la biblioteca.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" action="{% url 'crear_libro' %}" 
+          style="background-color: #98DED9; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div style="margin-bottom: 15px;">
+            <label for="titulo" style="font-weight: bold; color: #0B2F9F;">Título</label>
+            {{ form.titulo|add_class:"form-control" }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="autor" style="font-weight: bold; color: #0B2F9F;">Autor</label>
+            {{ form.autor|add_class:"form-control" }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="descripcion" style="font-weight: bold; color: #0B2F9F;">Descripción</label>
+            {{ form.descripcion|add_class:"form-control" }}
+        </div>
+
+        <button type="submit" 
+                style="width: 100%; background-color: #0B2F9F; color: white; padding: 10px; font-size: 1em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+            Agregar Libro
+        </button>
+
+        <div style="text-align: center; margin-top: 10px;">
+            <p style="font-size: 14px; color: #555;">
+                <a href="{% url 'lista_libro' %}" style="color: #0B2F9F; text-decoration: none;">Volver a la lista de libros</a>
+            </p>
+        </div>
+    </form>
+</div>
+{% endblock %}
