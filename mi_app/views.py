@@ -170,9 +170,13 @@ def login_view(request):
         form = AuthenticationForm()
     return render(request, 'accounts/login.html', {'form': form})
 
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.contrib import messages  
+
 def logout_view(request):
-    logout(request)
-    messages.success(request, "Has cerrado sesión exitosamente.")
+    logout(request)  
+    messages.success(request, "Has cerrado sesión exitosamente.")  
     return redirect('home')
 
 from .forms import PageForm

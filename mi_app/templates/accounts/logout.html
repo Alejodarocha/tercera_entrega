@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column; align-items: center; margin-top: 50px;">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif; text-align: center;">Cerrar Sesión</h1>
+    <p style="color: #555; font-size: 16px; text-align: center; max-width: 400px;">
+        ¿Estás seguro de que querés cerrar sesión? Si cerras sesión, tendrás que iniciar sesión nuevamente para acceder a tu cuenta.
+    </p>
+</div>
+
+<div style="display: flex; justify-content: center; margin: 20px;">
+    <form method="post" action="{% url 'logout' %}" style="background-color: #98DED9; padding: 20px; border-radius: 8px; max-width: 400px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        
+        <button type="submit" style="width: 100%; background-color: #d60c0c; color: white; padding: 10px; font-size: 1em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+            Cerrar Sesión
+        </button>
+        
+        <div style="text-align: center; margin-top: 10px;">
+            <a href="{% url 'home' %}" style="color: #0B2F9F; text-decoration: none; font-size: 14px;">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
