@@ -1,24 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Título de la Página</title>
-    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Biblioteca{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  
 </head>
 <body>
-    <header>
-       
-    </header>
-    <main>
+    <div class="menu">
+        <h1>Bienvenido a la Biblioteca número 1 del mundo</h1>
+        <ul class="list-group">
+            <li class="list-group-item"><a href="{% url 'about' %}"><div class="btn">Acerca de mí</div></a></li>
+            {% if user.is_authenticated %}
+                <li class="list-group-item"><a href="{% url 'profile' %}"><div class="btn">Perfil</div></a></li>
+                <li class="list-group-item"><a href="{% url 'logout' %}"><div class="btn">Cerrar sesión</div></a></li>
+            {% else %}
+                <li class="list-group-item"><a href="{% url 'login' %}"><div class="btn">Iniciar Sesión</div></a></li>
+                <li class="list-group-item"><a href="{% url 'signup' %}"><div class="btn">Registrarse</div></a></li>
+            {% endif %}
+            <li class="list-group-item"><a href="{% url 'buscar_libro' %}"><div class="btn">Buscar Libro</div></a></li>
+            <li class="list-group-item"><a href="{% url 'crear_libro' %}"><div class="btn">Añadir libro</div></a></li>
+            <li class="list-group-item"><a href="{% url 'lista_libro' %}"><div class="btn">Lista de Libros</div></a></li>
+        </ul>
+    </div>
+
+    <div class="contenido">
         {% block content %}
-        
         {% endblock %}
-    </main>
-    <footer>
-        
-    </footer>
+    </div>
 </body>
 </html>
-

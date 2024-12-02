@@ -23,6 +23,12 @@ media
 # C extensions
 *.so
 
+# Ignorar el entorno virtual
+.venv/
+
+# Ignorar el archivo de base de datos SQLite
+db.sqlite3
+
 # Distribution / packaging
 .Python
 build/

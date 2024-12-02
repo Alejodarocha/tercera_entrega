@@ -24,23 +24,19 @@ class Page(models.Model):
 
 from django.contrib.auth.models import User
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    descripcion = models.CharField(max_length=500, blank=True)
-    imagen = models.ImageField(upload_to='profile_images', blank=True, null=True)
 
-    def __str__(self):
-        return f'Perfil de {self.user.username}'
 
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)
+    def __str__(self):
+        return self.user.username
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):

@@ -2,14 +2,26 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import SignupForm
 
+
+from django.contrib.auth import login
+
+from django.contrib import messages
+from .models import Profile
+
+
+
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            return redirect('login')
+            user = form.save()  # Guarda el usuario con la contraseña cifrada
+            Profile.objects.create(user=user)  # Crea el perfil del usuario
+            login(request, user)  # Inicia sesión automáticamente después del registro
+            messages.success(request, "Te has registrado exitosamente.")
+            return redirect('home')  # Redirige a la página principal
+        else:
+            messages.error(request, "Hubo un error en el registro.")
     else:
         form = SignupForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -18,13 +30,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .forms import ProfileForm
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+
 from django.shortcuts import render, redirect
 from .forms import ProfileForm
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 from .models import Profile
 
 
@@ -51,47 +63,47 @@ from .forms import LibroForm
 from django.contrib import messages
 
 
-def lista_libro(request):
-    libros = Libro.objects.all()
-    return render(request, 'lista_libro.html', {'libros': libros})
+from django.views.generic.list import ListView
+
+class ListaLibroView(LoginRequiredMixin, ListView):
+    model = Libro
+    template_name = 'lista_libro.html'  
+    context_object_name = 'libros'  
 
 
-def crear_libro(request):
-    if request.method == 'POST':
-        form = LibroForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Libro agregado de manera exitosa.") 
-            return redirect('lista_libro')  
-    else:
-        form = LibroForm()
-    return render(request, 'libro_form.html', {'form': form})
+
+from django.views.generic.edit import CreateView
+from django.urls import reverse_lazy
+from .models import Libro
+
+class CrearLibroView(LoginRequiredMixin, CreateView):
+    model = Libro
+    fields = ['titulo', 'autor', 'descripcion', 'fecha_publicacion']
+    template_name = 'libro_form.html'  
+    success_url = reverse_lazy('lista_libro') 
 
 
-def libro_update(request, pk):
-    libro = get_object_or_404(Libro, pk=pk)
-    if request.method == 'POST':
-        form = LibroForm(request.POST, request.FILES, instance=libro)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Libro actualizado exitosamente.")
-            return redirect('lista_libros')
-    else:
-        form = LibroForm(instance=libro)
-    return render(request, 'libro_form.html', {'form': form})
+
+from django.views.generic.edit import UpdateView
+
+class ActualizarLibroView(LoginRequiredMixin, UpdateView):
+    model = Libro
+    fields = ['titulo', 'autor', 'descripcion', 'fecha_publicacion']
+    template_name = 'libro_form.html'  
+    success_url = reverse_lazy('lista_libro') 
+
 
 
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseForbidden
 
-def libro_delete(request, pk):
-    libro = get_object_or_404(Libro, pk=pk)  
+from django.views.generic.edit import DeleteView
 
-    if request.method == "POST":
-        libro.delete()  
-        return redirect('lista_libro')  
-    else:
-        return HttpResponseForbidden()
+class EliminarLibroView(LoginRequiredMixin, DeleteView):
+    model = Libro
+    template_name = 'libro_delete.html'  
+    success_url = reverse_lazy('lista_libro')  
+
 
 
 from .models import Page
@@ -116,6 +128,9 @@ def delete_page(request, pk):
         messages.success(request, "Página eliminada exitosamente.")
         return redirect('page_list')
     return render(request, 'pages/page_confirm_delete.html', {'page': page})
+
+
+
 
 from django.db.models import Q
 from .models import Libro
@@ -157,17 +172,15 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-               
-                if not hasattr(user, 'profile'):
-                    Profile.objects.create(user=user)  
                 messages.success(request, f"Bienvenido, {user.username}!")
-                return redirect('home')
+                return redirect('home') 
             else:
                 messages.error(request, "Nombre de usuario o contraseña incorrectos.")
         else:
-            messages.error(request, "Nombre de usuario o contraseña incorrectos.")
+            messages.error(request, "Por favor, corrige los errores del formulario.")
     else:
         form = AuthenticationForm()
+
     return render(request, 'accounts/login.html', {'form': form})
 
 from django.contrib.auth import logout
