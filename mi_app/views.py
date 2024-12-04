@@ -11,17 +11,17 @@ from .models import Profile
 
 
 
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Guarda el usuario con la contraseña cifrada
-            Profile.objects.create(user=user)  # Crea el perfil del usuario
-            login(request, user)  # Inicia sesión automáticamente después del registro
-            messages.success(request, "Te has registrado exitosamente.")
-            return redirect('home')  # Redirige a la página principal
+            user = form.save()  
+            login(request, user)  
+            messages.success(request, "¡Te has registrado correctamente!")
+            return redirect('home') 
         else:
-            messages.error(request, "Hubo un error en el registro.")
+            messages.error(request, "Error al registrarse.")
     else:
         form = SignupForm()
     return render(request, 'accounts/signup.html', {'form': form})
@@ -49,13 +49,32 @@ def profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
+            form.save()  
             messages.success(request, "Perfil actualizado exitosamente.")
             return redirect('profile')  
     else:
         form = ProfileForm(instance=profile)  
 
     return render(request, 'profile.html', {'form': form, 'profile': profile})
+
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()  
+            update_session_auth_hash(request, form.user)  
+            messages.success(request, '¡Contraseña cambiada exitosamente!')
+            return redirect('profile')  
+        else:
+            messages.error(request, 'Por favor, corrija los errores.')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'accounts/change_password.html', {'form': form})
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Libro
@@ -79,7 +98,7 @@ from .models import Libro
 class CrearLibroView(LoginRequiredMixin, CreateView):
     model = Libro
     fields = ['titulo', 'autor', 'descripcion', 'fecha_publicacion']
-    template_name = 'libro_form.html'  
+    template_name = 'crear_libro.html'  
     success_url = reverse_lazy('lista_libro') 
 
 
@@ -206,3 +225,24 @@ def crear_pagina(request):
         form = PageForm()
     return render(request, 'crear_pagina.html', {'form': form})
 
+from django.shortcuts import render, get_object_or_404
+from .models import Page  
+def page_detail(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)  
+    return render(request, 'page_detail.html', {'libro': libro})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .forms import PageForm  
+
+def page_edit(request, pk):
+    libro = get_object_or_404(Libro, pk=pk)  
+    
+    if request.method == 'POST':
+        form = LibroForm(request.POST, request.FILES, instance=libro)  
+        if form.is_valid():
+            form.save()  
+            return redirect('page_detail', pk=libro.pk)  
+    else:
+        form = LibroForm(instance=libro)  
+
+    return render(request, 'page_edit.html', {'form': form, 'libro': libro})

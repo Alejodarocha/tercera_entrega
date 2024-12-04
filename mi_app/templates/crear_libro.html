@@ -15,17 +15,22 @@
 
         <div style="margin-bottom: 15px;">
             <label for="titulo" style="font-weight: bold; color: #0B2F9F;">Título</label>
-            {{ form.titulo|add_class:"form-control" }}
+            <input type="text" name="titulo" id="titulo" class="form-control" value="{{ form.titulo.value }}">
         </div>
 
         <div style="margin-bottom: 15px;">
             <label for="autor" style="font-weight: bold; color: #0B2F9F;">Autor</label>
-            {{ form.autor|add_class:"form-control" }}
+            <input type="text" name="autor" id="autor" class="form-control" value="{{ form.autor.value }}">
         </div>
 
         <div style="margin-bottom: 15px;">
             <label for="descripcion" style="font-weight: bold; color: #0B2F9F;">Descripción</label>
-            {{ form.descripcion|add_class:"form-control" }}
+            <textarea name="descripcion" id="descripcion" class="form-control">{{ form.descripcion.value }}</textarea>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="fecha_publicacion" style="font-weight: bold; color: #0B2F9F;">Fecha de Publicación</label>
+            <input type="date" name="fecha_publicacion" id="fecha_publicacion" class="form-control" value="{{ form.fecha_publicacion.value }}">
         </div>
 
         <button type="submit" 

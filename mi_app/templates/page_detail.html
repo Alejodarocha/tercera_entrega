@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalles del Libro{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 50px auto; background-color: #f9f9f9; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h1 style="color: #0B2F9F; font-family: Arial, sans-serif; text-align: center;">{{ libro.titulo }}</h1>
+
+    <div class="row" style="margin-top: 30px;">
+        <div class="col-md-6">
+            <p><strong>Autor:</strong> {{ libro.autor }}</p>
+            <p><strong>Fecha de publicación:</strong> {{ libro.fecha_publicacion }}</p>
+            <p><strong>Descripción:</strong></p>
+            <p>{{ libro.descripcion }}</p>
+        </div>
+        <div class="col-md-6">
+            {% if libro.imagen %}
+                <img src="{{ libro.imagen.url }}" alt="Imagen de {{ libro.titulo }}" class="img-fluid" style="border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+            {% else %}
+                <p>No hay imagen disponible.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="text-center" style="margin-top: 30px;">
+        <a href="{% url 'page_edit' pk=libro.pk %}" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; border-radius: 5px; background-color: #0B2F9F; color: white;">
+            Editar Libro
+        </a>
+    </div>
+</div>
+{% endblock %}
